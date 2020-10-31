@@ -4,6 +4,7 @@ import pathlib
 import mimetypes
 import cv2
 import numpy as np
+import subprocess
 
 
 def get_folder_content(path: str, name=False):
@@ -48,6 +49,29 @@ def convert_video_to_np(video):
         fc += 1
     cap.release()
     return buf
+
+
+def get_frame_types(video_fn):
+    command = 'ffprobe -v error -show_entries frame=pict_type -of default=noprint_wrappers=1'.split()
+    out = subprocess.check_output(command + [video_fn]).decode()
+    frame_types = out.replace('pict_type=','').split()
+    return zip(range(len(frame_types)), frame_types)
+
+
+def save_i_keyframes(video_fn):
+    frame_types = get_frame_types(video_fn)
+    i_frames = [x[0] for x in frame_types if x[1] == 'I']
+    full_frame = []
+    if i_frames:
+        cap = cv2.VideoCapture(video_fn)
+        for frame_no in i_frames:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_no)
+            ret, frame = cap.read()
+            full_frame.append(frame)
+        cap.release()
+        return np.asarray(full_frame)
+    else:
+        print('No I-frames in '+ video_fn)
 
 
 
