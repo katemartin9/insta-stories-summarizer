@@ -3,6 +3,7 @@ from files_ops import get_stories, check_file_type, \
 from tensorflow import keras
 import tensorflow as tf
 from helper_funcs import plot_color_image
+import pytesseract
 
 
 if __name__ == '__main__':
@@ -11,7 +12,7 @@ if __name__ == '__main__':
     for key, vals in insta_dict.items():
         for val in vals:
             if check_file_type(val):
-                images = save_i_keyframes(val) # images = convert_video_to_np(val)
+                images, text = save_i_keyframes(val)  # images = convert_video_to_np(val)
                 plot_color_image(images[0])
                 images_resized = tf.image.resize_with_pad(images, 224, 224).numpy().astype(int)
                 plot_color_image(images_resized[0])

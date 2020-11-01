@@ -5,6 +5,9 @@ import mimetypes
 import cv2
 import numpy as np
 import subprocess
+import pytesseract
+from helper_funcs import remove_special_chars
+import pdb
 
 
 def get_folder_content(path: str, name=False):
@@ -62,14 +65,19 @@ def save_i_keyframes(video_fn):
     frame_types = get_frame_types(video_fn)
     i_frames = [x[0] for x in frame_types if x[1] == 'I']
     full_frame = []
+    frame_text = []
     if i_frames:
         cap = cv2.VideoCapture(video_fn)
         for frame_no in i_frames:
             cap.set(cv2.CAP_PROP_POS_FRAMES, frame_no)
             ret, frame = cap.read()
+            text_str = pytesseract.image_to_string(frame, lang="eng+rus")
+            text_str = remove_special_chars(text_str)
+            if len(text_str) > 0:
+                frame_text.extend(text_str)
             full_frame.append(frame)
         cap.release()
-        return np.asarray(full_frame)
+        return np.asarray(full_frame), frame_text
     else:
         print('No I-frames in '+ video_fn)
 
