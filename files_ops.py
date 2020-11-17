@@ -71,11 +71,12 @@ def save_i_keyframes(video_fn):
         for frame_no in i_frames:
             cap.set(cv2.CAP_PROP_POS_FRAMES, frame_no)
             ret, frame = cap.read()
-            text_str = pytesseract.image_to_string(frame, lang="eng+rus")
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            text_str = pytesseract.image_to_string(frame_rgb, lang="eng+rus")
             text_str = remove_special_chars(text_str)
             if len(text_str) > 0:
                 frame_text.extend(text_str)
-            full_frame.append(frame)
+            full_frame.append(frame_rgb)
         cap.release()
         return np.asarray(full_frame), frame_text
     else:
