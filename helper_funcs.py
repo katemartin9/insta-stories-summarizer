@@ -3,8 +3,7 @@ import re
 
 
 def plot_color_image(image):
-    plt.imshow(image, interpolation="nearest")
-    plt.axis("off")
+    plt.imshow(image)
     plt.show()
 
 
