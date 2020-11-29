@@ -7,7 +7,11 @@ import numpy as np
 import subprocess
 import pytesseract
 from helper_funcs import remove_special_chars
-import pdb
+from pathlib import Path
+
+
+def create_directory(directory):
+    Path(directory).mkdir(parents=True, exist_ok=True)
 
 
 def get_folder_content(path: str, name=False):
