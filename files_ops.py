@@ -32,7 +32,7 @@ def get_stories(folder_name: str):
     return insta_dict
 
 
-def check_file_type(file, ftype='video'):
+def check_file_type(file, ftype):
     mimetypes.init()
     mimestart = mimetypes.guess_type(file)[0]
     if mimestart is not None:
